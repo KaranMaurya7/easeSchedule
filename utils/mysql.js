@@ -9,6 +9,8 @@ export class MySQL {
 
         const credential = config.mysql;
 
+        console.log('MySQL connections:');
+        
         credential.forEach(( config ) => {
 
             const pool = mysql2.createPool({
@@ -23,15 +25,13 @@ export class MySQL {
 
             MySQL.#connections.set(config.name, pool);
 
-            console.log(`${config.name} connected.`);
+            console.log(" connection:  ",`${config.name} connected.\n`);
         });
 
     }
 
 
     async query(sql, params, connection_name = "admin") {
-
-        console.log(MySQL.#connections.get(connection_name));
 
         if (!MySQL.#connections.has(connection_name)) {
 

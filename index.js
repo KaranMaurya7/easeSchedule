@@ -1,6 +1,20 @@
-import { MySQL } from "./server/mysql.js";
+import { config } from "./config/config.js";
+import { API } from "./utils/api.js";
+import { MySQL } from "./utils/mysql.js";
 
 const mysql = new MySQL();
+const api = new API();
+
+api.setupRoutes();
+
+console.log(`                    
+	Welcome to the source, enjoy your stay.
+	====================================
+	App Name: Ease/Schedule
+	Environment: 'development'
+	Server is running on port: ${config["node-port"]}
+	====================================
+`);
 
 mysql.connectAll()
 
