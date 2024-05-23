@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "A appointment making app where you can host or book you appointments",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Karan Maurya",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.9.7"
+  }
 }
