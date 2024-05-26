@@ -1,68 +1,62 @@
-import { MySQL } from "./mysql.js";
-import express from 'express';
-import { readdirSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, resolve, join } from 'path';
+import Http from './http.js';
+import { MySQL } from './mysql.js';
+import Routes from './routes.js';
 
-export class API {
+class Api {
 
-	constructor(){
+	constructor() {
+
+		this.http = new Http();
+
+		this.setupRoutes();
+		
+		this.setupExceptionHandler();
 
 		this.mysql = new MySQL();
-		this.app = express();
 	}
-
-	load() {
-		this.mysql.connectAll();
-	}
-
-	async setupRoutes() {
-        // Get the directory path of the current module
-        const currentFilePath = fileURLToPath(import.meta.url);
-        const currentDirPath = dirname(currentFilePath);
-        
-        // Navigate to the web directory (two directories above)
-        const webDirPath = resolve(currentDirPath, '../');
-		console.log('webDirPath : ',webDirPath)
-
-        
-        // Construct the path to the routes folder
-        const routesPath = resolve(webDirPath, 'web');
-		console.log('routesPath : ',routesPath)
-
-        
-        // Read the content of the routes folder
-        const routeFolders = readdirSync(routesPath);
-		console.log('routeFolders : ',routeFolders)
-
-
-        // Dynamically load route modules
-        for (const folder of routeFolders) {
-            const routePath = join(routesPath, folder);
-            const { default: routeModule } = await import(routePath);
-            this.app.use(`/${folder}`, routeModule);
-        }
-    }	
-
-	// setupRoutes() {
-       
-	// 	const routesPath = resolve(__dirname, 'routes');
-        
-	// 	const routeFolders = readdirSync(routesPath);
-
-    //     routeFolders.forEach(folder => {
-        
-	// 		const routePath = join(routesPath, folder);
-        
-	// 		const routeModule = require(routePath).default; // Assuming route modules export a default function or Router object
-        
-	// 		this.app.use(`/${folder}`, routeModule);
-    //     });
-    // }
 
 	listen(port) {
-        this.app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
-    }
+
+		this.http.listen(port);
+	}
+
+	async setupDatabase() {
+
+		try {
+			await MySQL.connectAll();
+
+		} catch (error) {
+
+			console.error('Failed to connect to the database:', error);
+		}
+
+	}
+
+	setupRoutes() {
+
+		console.log('Ease Schedule \n', 'Setup\n\n');
+
+		new Routes(this.http, this);
+	}
+
+	setupExceptionHandler() {
+
+		this.http.exception((err, req, res, next) => {
+
+			console.error(err.stack);
+
+			this.http.error(500, 'Internal Server Error', res);	
+		});
+	}
+
+	async handleHome(req, res) {
+
+		const [q] = await this.mysql.query(`SELECT * FROM users WHERE id =?`,[1]);
+
+		console.log(q.first_name);
+		
+		res.status(200).send(`Welcome to the Appointment Center! ${q.first_name}`);
+	}
 }
+
+export default Api;
