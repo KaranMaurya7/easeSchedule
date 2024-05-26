@@ -1,9 +1,9 @@
-import { MySQL } from "./server/mysql.js";
+import { config } from './config/config.js';
+import Api from './utils/api.js';
 
-const mysql = new MySQL();
 
-mysql.connectAll()
+const api = new Api();
 
-const res = await mysql.query(`SELECT * FROM users WHERe id = ?`, [1]);
+api.listen(config['node-port']);
 
-console.log(res);
+api.setupDatabase();
