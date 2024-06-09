@@ -25,6 +25,6 @@ class Api {
 	// static Exception = class {
 
 	// } 	
-}
+}	
 
 export default Api;
