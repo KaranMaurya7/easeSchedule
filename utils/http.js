@@ -29,6 +29,8 @@ class Http {
     }
 
     async setupRoutes() {
+	
+		const [name] = await this.mysql.query(`SELECT * FROM users Where id = ?`,[1])
 
         this.app.get('/', (req, res) => {
             return res.status(200).send(`Welcome to the Appointment Center! ${name.first_name}`);
