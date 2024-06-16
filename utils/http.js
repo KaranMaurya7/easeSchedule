@@ -1,5 +1,6 @@
 import express from 'express';
 import { config } from '../config/config.js';
+import { User } from '../server/user.js';
 
 class Http {
 	
@@ -30,10 +31,13 @@ class Http {
 
     async setupRoutes() {
 	
-		const [name] = await this.mysql.query(`SELECT * FROM users Where id = ?`,[1])
+		const [name] = await this.mysql.query(`SELECT * FROM users Where id = ?`,[1]);
 
-        this.app.get('/', (req, res) => {
-            return res.status(200).send(`Welcome to the Appointment Center! ${name.first_name}`);
+		const users = new User();
+		const userExec = users.execute();
+
+        this.app.get('/api/users', (req, res) => {
+            return res.status(200).send(userExec);
         });
 
     }
