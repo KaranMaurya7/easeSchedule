@@ -3,7 +3,6 @@ export const config = {
     "node-port": 9898,
     
     "mysql": [
-    
         {
             name:'name',
             host: 'host',
@@ -13,6 +12,5 @@ export const config = {
             database: 'database name',
             connectionLimit: 'limit',
         }
-    
     ]
 }

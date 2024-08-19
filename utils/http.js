@@ -1,6 +1,8 @@
 import express from 'express';
 import { config } from '../config/config.js';
 
+import Routes from './routes.js';
+
 class Http {
 	
 	mysql
@@ -10,15 +12,16 @@ class Http {
 		Object.assign(this, api);
 
 		this.mysql = mysql;
-		
 		this.app = express();
+		this.routes = new Routes(this, this.app);
 	}
 
-	setup() {
+	async setup() {
+
         this.setupMiddleware
-        this.setupRoutes();
         this.exception();
 		this.listen(config['node-port']);
+        await this.routes.setupRoutes();
     }
 
     setupMiddleware() {
@@ -26,16 +29,6 @@ class Http {
 		this.app.use(express.json());
         
 		this.app.use(express.urlencoded({ extended: true }));
-    }
-
-    async setupRoutes() {
-	
-		const [name] = await this.mysql.query(`SELECT * FROM users Where id = ?`,[1])
-
-        this.app.get('/', (req, res) => {
-            return res.status(200).send(`Welcome to the Appointment Center! ${name.first_name}`);
-        });
-
     }
 
     exception() {
@@ -57,13 +50,16 @@ class Http {
 		});
 	}
 
-	static async call(apiPath, options = {}) {
+	async call(apiPath, options = {}) {
 
-        const response = await fetch(`http://localhost:3000${apiPath}`, options);
+    //const response = await fetch(`http://localhost:3000${apiPath}`, options);
         
 		if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+		console.log(`fghjk`);
+		
         
 		return await response.json();
     }

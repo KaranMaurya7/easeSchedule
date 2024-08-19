@@ -1,4 +1,4 @@
-import Http from "../utils/http";
+import Http from "../utils/http.js";
 
 export class User extends Http{
 
