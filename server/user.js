@@ -1,16 +1,20 @@
-import Http from "../utils/http.js";
+import { Middle } from "../utils/middle.js";
 
-export class User extends Http{
+export class User {
 
-    async execute(){
+	constructor(mysql) {
+		this.mysql = mysql;
+	}
 
-        const response = await this.mysql.query(
-            `SELECT 
-                *
-            FROM
-                users`
-        );
+	async execute(){
+		
+		const response = await this.mysql.query(
+			`SELECT 
+				*
+			FROM
+				users`
+		);
 
-        return response;
-    }
+		return response;
+	}
 }

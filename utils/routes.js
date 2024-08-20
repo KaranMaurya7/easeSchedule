@@ -1,31 +1,28 @@
-//import { User } from "../server/user.js";
+import { User } from "../server/user.js";
 
 class Routes {
 
-    constructor(http, app) {
-    
-        Object.assign(this,http);
-    
-        this.http = http;
+	constructor(http, router) {
+	
+		Object.assign(this, http);
+	
+		this.http = http;
 
-        this.app = app;
-        this.mysql = this.mysql;
-        this.setupRoutes();
-    }
+		this.router = router;
+	}
 
-    async setupRoutes() {
-
-        //const user = new User().execute();
-        
-        this.app.get('/', (req, res) => {
-            return res.status(200).send(`<h1>HI</h1>`)
-        });
-        
-        this.app.get('/api/users', (req, res) => {
-            return res.status(200).send(   );
-        });
-
-    }
+	async setupRoutes() {
+		
+		this.router.get('/', (req, res) => {
+			return res.status(200).send(`<h1>HI</h1>`)
+		});
+		
+		this.router.get('/api/users', async(req, res) => {
+			const user = new User(this.mysql)
+			const userD = await user.execute();
+			return res.send(userD);
+		});
+	}
 }
 
 export default Routes;
