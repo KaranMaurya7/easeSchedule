@@ -1,7 +1,8 @@
 import express from 'express';
 import { config } from '../config/config.js';
 import Routes from './routes.js';
-
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 class Http {
 	
@@ -13,7 +14,9 @@ class Http {
 
 		this.mysql = mysql;
 		this.app = express();
-		this.router = express.Router() 	
+		this.router = express.Router();
+		const __filename = fileURLToPath(import.meta.url);
+		this.__dirname = path.dirname(__filename);
 	}
 
 	async setup() {
@@ -27,7 +30,10 @@ class Http {
 	}
 
 	setupMiddleware() {
-		
+
+		console.log(this.__dirname);
+
+		this.app.use(express.static(path.join(this.__dirname, '../web')));
 		this.app.use(express.json());
 		this.app.use(this.router);
 		this.app.use(express.urlencoded({ extended: true }));
@@ -53,15 +59,12 @@ class Http {
 
 	async call(apiPath, options = {}) {
 
-		//const response = await fetch(`http://localhost:3000${apiPath}`, options);
+		const response = await fetch(`http://localhost:9898/${apiPath}`, options);
 		
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
 		}
 
-		console.log(`fghjk`);
-		
-		
 		return await response.json();
 	}
 }
