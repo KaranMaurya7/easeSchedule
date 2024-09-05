@@ -14,11 +14,13 @@ class Routes {
 	async setupRoutes() {
 		
 		this.router.get('/', (req, res) => {
-			return res.sendFile(path.join(this.__dirname, '../web/index.html'))
+			res.setHeader('Content-Type', 'application/javascript');
+			res.sendFile(path.join(this.__dirname, '../web/index.html'))
 		});
 		
 		this.router.get('/api/users', async(req, res) => {
-			const user = this.http.call(`server/users`)
+			const use = new User()
+			const user = await this.http.serverCall(use)
 			return res.send(user);
 		});
 	}

@@ -57,15 +57,23 @@ class Http {
 		});
 	}
 
-	async call(apiPath, options = {}) {
-
-		const response = await fetch(`http://localhost:9898/${apiPath}`, options);
-		
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+	async serverCall(cls) {
+		try {
+			return await cls.execute(this.mysql)
+		} catch (error) {
+			console.log(`ServerCall----------------->`,error);
 		}
+	}
 
-		return await response.json();
+	static async call(apiPath, options = {}) {
+		try {
+			const response = await fetch(`http://localhost:9898/${apiPath}`, options);
+
+			console.log(`res`,response);
+			return await response.json();	
+		} catch (error) {
+			console.log(`Htt static call----------------->`,error);
+		}	
 	}
 }
 
