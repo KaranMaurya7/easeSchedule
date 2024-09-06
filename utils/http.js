@@ -27,11 +27,10 @@ class Http {
 
 		this.routes = new Routes(this, this.router);
 		await this.routes.setupRoutes();
+		await this.routes.setupApiRoutes();
 	}
 
 	setupMiddleware() {
-
-		console.log(this.__dirname);
 
 		this.app.use(express.static(path.join(this.__dirname, '../web')));
 		this.app.use(express.json());
@@ -65,16 +64,24 @@ class Http {
 		}
 	}
 
-	static async call(apiPath, options = {}) {
+	static async call(endpoint, data, headers = {}) {
 		try {
-			const response = await fetch(`http://localhost:9898/${apiPath}`, options);
+		  const response = await fetch(`${API_URL}/${endpoint}`, {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json',
+			  ...headers
+			},
+			body: JSON.stringify(data)
+		  });
+	
+		  return response.json();
 
-			console.log(`res`,response);
-			return await response.json();	
 		} catch (error) {
-			console.log(`Htt static call----------------->`,error);
-		}	
-	}
+		  console.error(error);
+		  throw error;
+		}
+	  }
 }
 
 export default Http;
