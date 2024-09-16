@@ -3,7 +3,6 @@ import { Middle } from "../utils/middle.js";
 export class User {
 
 	constructor(mysql) {
-		
 	}
 
 	async execute(mysql){

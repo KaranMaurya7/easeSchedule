@@ -41,9 +41,8 @@ class Http {
 	exception() {
 	   
 		this.app.use((err, req, res, next) => {
-		
 			console.error(err.stack);
-			res.status(500).send('Something broke!');
+			res.status(500).send('Exception Something broke!');
 		});
 	}
 
@@ -51,7 +50,6 @@ class Http {
 	listen(port) {
 
 		this.app.listen(port, () => {
-
 			console.log(`Server is running on port ${port} \n`);
 		});
 	}
@@ -60,30 +58,10 @@ class Http {
 		try {
 			return await cls.execute(this.mysql)
 		} catch (error) {
-			console.log(`ServerCall----------------->`,error);
+			console.log(`ServerCall- ---------------->`,error);
 		}
 	}
 
-	static async call(endpoint, data, headers = {}) {
-		try {
-		//  const response = await fetch(`${API_URL}/${endpoint}`, {
-		//	method: 'POST',
-		//	headers: {
-		//	  'Content-Type': 'application/json',
-		//	  ...headers
-		//	},
-		//	body: JSON.stringify(data)
-		  //});
-	
-		  //return response.json();
-
-		  serverCall(endpoint)
-
-		} catch (error) {
-		  console.error(error);
-		  throw error;
-		}
-	  }
 }
 
 export default Http;
