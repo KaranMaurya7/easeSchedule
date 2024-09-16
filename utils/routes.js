@@ -1,6 +1,6 @@
 import { User } from "../server/user.js";
 import path from 'path';
-import { Page } from "../web/page.js";
+import { Page } from "../web/js/page.js";
 
 class Routes {
 
@@ -18,7 +18,11 @@ class Routes {
 		const page = new Page()
 
 		this.router.get('/', (req, res) => {
-    		page.render(req, res, 'home'); // Assuming Page has a render method
+			res.sendFile(path.join(this.__dirname, '../web', 'html', 'home.html'));
+		});
+		
+		this.router.get('/about', (req, res) => {
+    		page.render(req, res, 'about'); // Assuming Page has a render method
 		});
 		
 	}

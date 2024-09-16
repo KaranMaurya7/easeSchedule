@@ -66,16 +66,18 @@ class Http {
 
 	static async call(endpoint, data, headers = {}) {
 		try {
-		  const response = await fetch(`${API_URL}/${endpoint}`, {
-			method: 'POST',
-			headers: {
-			  'Content-Type': 'application/json',
-			  ...headers
-			},
-			body: JSON.stringify(data)
-		  });
+		//  const response = await fetch(`${API_URL}/${endpoint}`, {
+		//	method: 'POST',
+		//	headers: {
+		//	  'Content-Type': 'application/json',
+		//	  ...headers
+		//	},
+		//	body: JSON.stringify(data)
+		  //});
 	
-		  return response.json();
+		  //return response.json();
+
+		  serverCall(endpoint)
 
 		} catch (error) {
 		  console.error(error);
