@@ -27,11 +27,10 @@ class Http {
 
 		this.routes = new Routes(this, this.router);
 		await this.routes.setupRoutes();
+		await this.routes.setupApiRoutes();
 	}
 
 	setupMiddleware() {
-
-		console.log(this.__dirname);
 
 		this.app.use(express.static(path.join(this.__dirname, '../web')));
 		this.app.use(express.json());
@@ -42,9 +41,8 @@ class Http {
 	exception() {
 	   
 		this.app.use((err, req, res, next) => {
-		
 			console.error(err.stack);
-			res.status(500).send('Something broke!');
+			res.status(500).send('Exception Something broke!');
 		});
 	}
 
@@ -52,7 +50,6 @@ class Http {
 	listen(port) {
 
 		this.app.listen(port, () => {
-
 			console.log(`Server is running on port ${port} \n`);
 		});
 	}
@@ -61,20 +58,10 @@ class Http {
 		try {
 			return await cls.execute(this.mysql)
 		} catch (error) {
-			console.log(`ServerCall----------------->`,error);
+			console.log(`ServerCall- ---------------->`,error);
 		}
 	}
 
-	static async call(apiPath, options = {}) {
-		try {
-			const response = await fetch(`http://localhost:9898/${apiPath}`, options);
-
-			console.log(`res`,response);
-			return await response.json();	
-		} catch (error) {
-			console.log(`Htt static call----------------->`,error);
-		}	
-	}
 }
 
 export default Http;

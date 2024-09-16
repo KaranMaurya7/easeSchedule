@@ -9,20 +9,24 @@ class Routes {
 	
 		this.http = http;
 		this.router = router;
+
 	}
 
 	async setupRoutes() {
-		
+
 		this.router.get('/', (req, res) => {
-			res.setHeader('Content-Type', 'application/javascript');
-			res.sendFile(path.join(this.__dirname, '../web/index.html'))
+			res.sendFile(path.join(this.__dirname, '../web', 'html', 'home.html'));
 		});
-		
+	}
+
+	async setupApiRoutes() {
+
 		this.router.get('/api/users', async(req, res) => {
 			const use = new User()
 			const user = await this.http.serverCall(use)
 			return res.send(user);
 		});
+
 	}
 }
 
