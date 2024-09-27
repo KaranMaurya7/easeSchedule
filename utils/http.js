@@ -3,6 +3,8 @@ import { config } from '../config/config.js';
 import Routes from './routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from "cors";
+import cookieParser from 'cookie-parser';
 
 class Http {
 	
@@ -22,7 +24,6 @@ class Http {
 	async setup() {
 
 		this.setupMiddleware()
-		this.exception();
 		this.listen(config['node-port']);
 
 		this.routes = new Routes(this, this.router);
@@ -32,18 +33,15 @@ class Http {
 
 	setupMiddleware() {
 
-		this.app.use(express.static(path.join(this.__dirname, '../web')));
 		this.app.use(express.json());
-		this.app.use(this.router);
+		this.app.use(cors({
+			origin:config.CORS_URL,
+			credentials:true,
+		}));
+		this.app.use(express.json({ limit:'1024kb'}));
 		this.app.use(express.urlencoded({ extended: true }));
-	}
-
-	exception() {
-	   
-		this.app.use((err, req, res, next) => {
-			console.error(err.stack);
-			res.status(500).send('Exception Something broke!');
-		});
+		this.app.use(cookieParser());
+		this.app.use(this.router);
 	}
 
 
@@ -54,9 +52,20 @@ class Http {
 		});
 	}
 
-	async serverCall(cls) {
+	async serverCall(cls, parameters = null, func = null) {
+
+		if(func) {
+
+			console.log(313)
+			try {
+				return await func(this.mysql, parameters);
+			} catch (error) {
+				return error;
+			}
+		}
+
 		try {
-			return await cls.execute(this.mysql)
+			return await cls.execute(this.mysql);
 		} catch (error) {
 			console.log(`ServerCall- ---------------->`,error);
 		}
