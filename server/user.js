@@ -1,9 +1,8 @@
-import { Middle } from "../utils/middle.js";
+
+import bcrypt from "bcrypt"
+import { ApiError } from "../utils/api";
 
 export class User {
-
-	constructor(mysql) {
-	}
 
 	async execute(mysql){
 
@@ -17,5 +16,36 @@ export class User {
 		);
 
 		return response;
+	}
+
+	async createUser(mysql, parameters) {
+		try {
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(parameters.password, saltRounds);
+
+            const sql = `
+                INSERT INTO users (first_name, last_name, username, email, password) 
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            const result = await mysql.query(sql, [
+                parameters.first_name,  
+                parameters.last_name,   
+                parameters.username,    
+                parameters.email,     
+                hashedPassword        
+            ]);
+
+			console.log(232);
+			
+            return {
+                id: result.insertId, 
+                ...parameters,
+                password: hashedPassword, 
+            };
+        } catch (error) {
+            console.error("Error creating user:", error);
+            return new ApiError(500, "Error creating user"); 
+        }
 	}
 }
